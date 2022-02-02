@@ -2,6 +2,7 @@ import './App.css';
 import GoblinForm from './GoblinForm';
 import GoblinList from './GoblinList';
 import Goblin from './Goblin';
+import { useState } from 'react';
 
 function App() {
   /* 
@@ -12,23 +13,45 @@ function App() {
       goblinFormHP, which is how we track the user input for the current HP of the goblin in the form
       goblinFormColor, which is how we track the user input for the current color of the goblin in the form
 */
+  const [allGoblins, setAllGoblins] = useState([]);
+  const [filteredGoblin, setFilteredGoblins] = useState([]);
+  const [goblinFormName, setGoblinFormName] = useState('');
+  const [goblinFormHP, setGoblinFormHP] = useState(1);
+  const [goblinFormColor, setGoblinFormColor] = useState('blue');
+
+  const resetForms = () => {
+    setGoblinFormName('');
+    setGoblinFormHP(0);
+    setGoblinFormColor('blue');
+  };
   
   function submitGoblin(e) {
-    e.preventDefault()
+    e.preventDefault();
     
     // on submit, make a new goblin object with a random id, a name that comes from the form state, an hp that comes from the form state, and a color that comes from the form state
-
+    const newGoblin = {
+      id: allGoblins.length + 1,
+      name: goblinFormName,
+      hp: goblinFormHP,
+      color: goblinFormColor
+    };
     // update the allGoblins array. Add the new goblin to the allGoblins array immutably.
+    setAllGoblins([...allGoblins, newGoblin]);
     
     // clear out the goblin form state items by setting them to empty strings. This will cause the form to reset in the UI.
+    resetForms();
+
   }
 
   function handleDeleteGoblin(id) {
     // find the index of the goblin in allGoblins with this id
+    const goblinIndex = allGoblins.findIndex(goblin => goblin.id === id);
 
     // use splice to delete the goblin object at this index
+    allGoblins.splice(goblinIndex, 1);
 
     // update the allGoblins array immutably to this new, smaller array
+    setAllGoblins([...allGoblins]);
   }
 
   function handleFilterGoblins(search) {
