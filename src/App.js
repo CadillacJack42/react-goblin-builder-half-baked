@@ -2,7 +2,7 @@ import './App.css';
 import GoblinForm from './GoblinForm';
 import GoblinList from './GoblinList';
 import Goblin from './Goblin';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
   /* 
@@ -18,6 +18,14 @@ function App() {
   const [goblinFormName, setGoblinFormName] = useState('');
   const [goblinFormHP, setGoblinFormHP] = useState(1);
   const [goblinFormColor, setGoblinFormColor] = useState('lightblue');
+  const [filterState, setFilter] = useState('');
+
+  useEffect(() => {
+    if (filterState) {
+      const filteredGoblin = allGoblins.filter(goblin => goblin.name.includes(filterState));
+      setFilteredGoblins(filteredGoblin);
+    } else setFilteredGoblins([...allGoblins]);
+  }, [filterState, allGoblins]);
 
   const resetForms = () => {
     setGoblinFormName('');
@@ -27,7 +35,6 @@ function App() {
   
   function submitGoblin(e) {
     e.preventDefault();
-    console.log(allGoblins);
     
     // on submit, make a new goblin object with a random id, a name that comes from the form state, an hp that comes from the form state, and a color that comes from the form state
     const newGoblin = {
@@ -55,16 +62,16 @@ function App() {
     setAllGoblins([...allGoblins]);
   }
 
-  function handleFilterGoblins(search) {
-    // use the filter method to get an array of goblins whose name includes this search argument
-    if (search) {
-      const filteredGoblin = allGoblins.filter(goblin => goblin.name.includes(search));
-      setFilteredGoblins(filteredGoblin);
-    } else setFilteredGoblins([...allGoblins]);
+  // function handleFilterGoblins(search) {
+  //   // use the filter method to get an array of goblins whose name includes this search argument
+  //   if (search) {
+  //     const filteredGoblin = allGoblins.filter(goblin => goblin.name.includes(search));
+  //     setFilteredGoblins(filteredGoblin);
+  //   } else setFilteredGoblins([...allGoblins]);
 
-    // if there is a search argument, set the filtered goblins to the filtered goblins
-    // if the search argument is undefined, set the filtered goblins in state to just be the array of all goblins
-  }
+  //   // if there is a search argument, set the filtered goblins to the filtered goblins
+  //   // if the search argument is undefined, set the filtered goblins in state to just be the array of all goblins
+  // }
 
 
   return (
@@ -85,7 +92,7 @@ function App() {
       <div className='goblin-filter quarter'>
         Filter Goblins
         {/* note that handleFilterGoblins is defined upstairs. This is where the allGoblins array gets filtered */}
-        <input onChange={(e) => handleFilterGoblins(e.target.value)} />
+        <input onChange={(e) => setFilter(e.target.value)} />
       </div>
       <GoblinForm 
         submitGoblin={submitGoblin}
